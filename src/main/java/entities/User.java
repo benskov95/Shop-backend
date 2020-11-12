@@ -35,6 +35,9 @@ public class User implements Serializable {
   
   @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
   private List<ProductOrder> orders = new ArrayList<>();
+  
+  @Column (name = "balance")
+  private double balance;
 
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -57,6 +60,7 @@ public class User implements Serializable {
   public User(String username, String userPass) {
     this.username = username;
     this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+    this.balance = 0;
   }
 
 
@@ -95,6 +99,14 @@ public class User implements Serializable {
 
     public void setOrders(List<ProductOrder> orders) {
         this.orders = orders;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
 }

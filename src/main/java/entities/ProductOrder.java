@@ -25,12 +25,15 @@ public class ProductOrder implements Serializable {
     @Column (name = "order_id")
     private int id;
     
+    @Column ( name = "total_price")
+    private double totalPrice;
+    
     @ManyToOne
     @JoinColumn (name = "user_name", referencedColumnName = "user_name")
     private User user;
     
-    @ManyToMany (mappedBy = "orders", cascade = CascadeType.PERSIST)
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<ProductOrderline> orderlines = new ArrayList<>();
 
     public ProductOrder(User user) {
         this.user = user;
@@ -39,13 +42,27 @@ public class ProductOrder implements Serializable {
     public ProductOrder() {
     }
     
-    public void addProduct(Product product) {
-        product.getOrders().add(this);
-        this.products.add(product);
+    public void addOrderline(ProductOrderline orderline) {
+        orderline.setOrder(this);
+        this.orderlines.add(orderline);
     }
 
     public int getId() {
         return id;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+    
+    public void calcTotalPrice() {
+        for (ProductOrderline ol : this.orderlines) {
+            this.totalPrice += ol.getProduct().getPrice() * ol.getQuantity();
+        }
     }
 
     public User getUser() {
@@ -56,12 +73,12 @@ public class ProductOrder implements Serializable {
         this.user = user;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<ProductOrderline> getOrderlines() {
+        return orderlines;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setOrderlines(List<ProductOrderline> orderlines) {
+        this.orderlines = orderlines;
     }
     
 }

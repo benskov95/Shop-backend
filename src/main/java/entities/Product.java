@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -32,9 +33,12 @@ public class Product implements Serializable {
     @Column (name = "image")
     private String image;
     
-    @ManyToMany
-    @JoinColumn(name = "productorder_id", referencedColumnName = "order_id")
-    private List<ProductOrder> orders = new ArrayList<>();
+    @OneToMany (mappedBy = "product")
+    private List<ProductOrderline> orderlines;
+    
+//    @ManyToMany
+//    @JoinColumn(name = "productorder_id", referencedColumnName = "order_id")
+//    private List<ProductOrder> orders = new ArrayList<>();
 
     public Product(String title, double price, String description, String category, String image) {
         this.title = title;
@@ -91,12 +95,20 @@ public class Product implements Serializable {
         this.image = image;
     }
 
-    public List<ProductOrder> getOrders() {
-        return orders;
+//    public List<ProductOrder> getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(List<ProductOrder> orders) {
+//        this.orders = orders;
+//    }
+
+    public List<ProductOrderline> getOrderlines() {
+        return orderlines;
     }
 
-    public void setOrders(List<ProductOrder> orders) {
-        this.orders = orders;
+    public void setOrderlines(List<ProductOrderline> orderlines) {
+        this.orderlines = orderlines;
     }
     
 }
