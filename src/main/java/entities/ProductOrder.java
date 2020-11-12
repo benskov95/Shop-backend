@@ -25,6 +25,9 @@ public class ProductOrder implements Serializable {
     @Column (name = "order_id")
     private int id;
     
+    @Column (name = "refund_requested")
+    private boolean hasRequestedRefund;
+    
     @Column ( name = "total_price")
     private double totalPrice;
     
@@ -37,6 +40,7 @@ public class ProductOrder implements Serializable {
 
     public ProductOrder(User user) {
         this.user = user;
+        this.hasRequestedRefund = false;
     }
 
     public ProductOrder() {
@@ -79,6 +83,14 @@ public class ProductOrder implements Serializable {
 
     public void setOrderlines(List<ProductOrderline> orderlines) {
         this.orderlines = orderlines;
+    }
+
+    public boolean getHasRequestedRefund() {
+        return hasRequestedRefund;
+    }
+
+    public void setHasRequestedRefund(boolean hasRequestedRefund) {
+        this.hasRequestedRefund = hasRequestedRefund;
     }
     
 }

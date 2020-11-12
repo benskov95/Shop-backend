@@ -16,6 +16,7 @@ import java.util.concurrent.TimeoutException;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -69,9 +70,17 @@ public class ProductOrderResource {
     @PUT
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
+    public String requestRefund(@PathParam("orderId") int orderId) {
+        PRODUCT_FACADE.requestRefund(orderId);
+        return "{\"refundMsg\":" + "\"Refund has been requested and will be approved by an admin at some point.\"}";
+    }
+    
+    @DELETE
+    @Path("{orderId}")
+    @Produces(MediaType.APPLICATION_JSON)
     public String refundOrder(@PathParam("orderId") int orderId) {
        double currentBalance = PRODUCT_FACADE.refundOrder(orderId);
-       return "{\"refundMsg\":" + "Refund complete. Your balance is now: " + currentBalance + " DKK\"}";
+       return "{\"refundMsg\":" + "\"Refund complete. Your balance is now: " + currentBalance + " DKK\"}";
     }
     
 }

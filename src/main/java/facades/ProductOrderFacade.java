@@ -36,7 +36,10 @@ public class ProductOrderFacade {
         
         List<ProductOrderDTO> orderDTOs = new ArrayList<>();
         for (ProductOrder order : orders) {
-            orderDTOs.add(new ProductOrderDTO(order));
+            orderDTOs.add(new ProductOrderDTO(
+                    order.getId(), 
+                    order.getUser().getUsername(), 
+                    order.getHasRequestedRefund()));
         }
         return orderDTOs;
     }
@@ -76,21 +79,19 @@ public class ProductOrderFacade {
         return olDTOs;
     }
     
-    public ProductOrderDTO addOrder(ProductOrderDTO orderDTO) throws InsufficientFunds {
+    
+    public void requestRefund(int orderId) {
         EntityManager em = emf.createEntityManager();
-        User user = em.find(User.class, orderDTO.getUsername());
-        ProductOrder order = new ProductOrder(user);
-        prepareOrder(order, orderDTO);
-        finalizeOrder(order);
+        ProductOrder p = em.find(ProductOrder.class, orderId);
+        
         try {
             em.getTransaction().begin();
-            em.persist(order);
+            p.setHasRequestedRefund(true);
             em.getTransaction().commit();
-            return orderDTO;
         } finally {
             em.close();
         }
-    }
+    } 
     
     public double refundOrder(int orderId) {
         EntityManager em = emf.createEntityManager();
@@ -103,6 +104,22 @@ public class ProductOrderFacade {
         em.remove(p);
         em.getTransaction().commit();
         return user.getBalance();
+        } finally {
+            em.close();
+        }
+    }
+    
+    public ProductOrderDTO addOrder(ProductOrderDTO orderDTO) throws InsufficientFunds {
+        EntityManager em = emf.createEntityManager();
+        User user = em.find(User.class, orderDTO.getUsername());
+        ProductOrder order = new ProductOrder(user);
+        prepareOrder(order, orderDTO);
+        finalizeOrder(order);
+        try {
+            em.getTransaction().begin();
+            em.persist(order);
+            em.getTransaction().commit();
+            return orderDTO;
         } finally {
             em.close();
         }
