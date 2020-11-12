@@ -54,20 +54,6 @@ public class ProductOrderFacade {
         return orderDTOs;
     }
     
-    public List<ProductOrderlineDTO> getOrderlinesByOrderId(int orderId) {
-        EntityManager em = emf.createEntityManager();
-        ProductOrder p = em.find(ProductOrder.class, orderId);
-        
-        List<ProductOrderline> orderlines = p.getOrderlines();
-        List<ProductOrderlineDTO> olDTOs = new ArrayList<>();
-        for (ProductOrderline ol : orderlines) {
-            olDTOs.add(new ProductOrderlineDTO(ol));
-        }
-        
-        return olDTOs;
-    }
-    
-    
     public void requestRefund(int orderId) {
         EntityManager em = emf.createEntityManager();
         ProductOrder p = em.find(ProductOrder.class, orderId);
@@ -102,12 +88,13 @@ public class ProductOrderFacade {
         User user = em.find(User.class, orderDTO.getUsername());
         ProductOrder order = new ProductOrder(user);
         prepareOrder(order, orderDTO);
+        checkIfProductExists(order, em);
         finalizeOrder(order);
         try {
             em.getTransaction().begin();
             em.persist(order);
             em.getTransaction().commit();
-            return orderDTO;
+            return new ProductOrderDTO(order);
         } finally {
             em.close();
         }
@@ -131,6 +118,16 @@ public class ProductOrderFacade {
             throw new InsufficientFunds("You do not have enough money to make this purchase.");
         } else {
             order.getUser().setBalance(order.getUser().getBalance() - order.getTotalPrice());
+        }
+    }
+    
+    private void checkIfProductExists(ProductOrder p, EntityManager em) {
+        for (ProductOrderline ol : p.getOrderlines()) {    
+            Query query = em.createQuery("SELECT p FROM Product p WHERE p.title = :title");
+            query.setParameter("title", ol.getProduct().getTitle());
+            if (query.getResultList().size() > 0) {
+                 ol.setProduct((Product) query.getResultList().get(0));
+            }
         }
     }
     

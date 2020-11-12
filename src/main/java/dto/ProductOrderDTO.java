@@ -2,6 +2,7 @@ package dto;
 
 import entities.ProductOrder;
 import entities.ProductOrderline;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductOrderDTO {
@@ -20,7 +21,7 @@ public class ProductOrderDTO {
         this.id = order.getId();
         this.username = order.getUser().getUsername();
         this.hasRequestedRefund = order.getHasRequestedRefund();
-        convertListToDTO(order.getOrderlines());
+        this.orderlines = convertListToDTO(order.getOrderlines());
     }
 
     public int getId() {
@@ -47,10 +48,12 @@ public class ProductOrderDTO {
         this.orderlines = orderlines;
     }
     
-    public final void convertListToDTO(List<ProductOrderline> orderlines) {
+    public final List<ProductOrderlineDTO> convertListToDTO(List<ProductOrderline> orderlines) {
+        List<ProductOrderlineDTO> olDTOs = new ArrayList<>();
         for (ProductOrderline ol : orderlines) {
-            this.orderlines.add(new ProductOrderlineDTO(ol));
+            olDTOs.add(new ProductOrderlineDTO(ol));
         }
+        return olDTOs;
     }
 
     public boolean getHasRequestedRefund() {

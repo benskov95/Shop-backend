@@ -36,31 +36,25 @@ public class ProductOrderResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public String getAllOrders() {
         List<ProductOrderDTO> orderDTOs = PRODUCT_FACADE.getAllOrders();
         return GSON.toJson(orderDTOs);
     }
     
     @GET
-    @Path("user/{username}")
+    @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"user", "admin"})
     public String getOrdersByUsername(@PathParam("username") String username) {
         List<ProductOrderDTO> orderDTOs = PRODUCT_FACADE.getOrdersByUsername(username);
         return GSON.toJson(orderDTOs);
     }
     
-    @GET
-    @Path("{orderId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getOrderlinesByOrderId(@PathParam("orderId") int id) {
-        List<ProductOrderlineDTO> olDTOs = PRODUCT_FACADE.getOrderlinesByOrderId(id);
-        return GSON.toJson(olDTOs);
-    }
-    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"user", "admin"})
+    @RolesAllowed("user")
     public String addOrder(String productOrderDTO) throws InsufficientFunds {
         ProductOrderDTO pDTO = GSON.fromJson(productOrderDTO, ProductOrderDTO.class);
         ProductOrderDTO addedDTO = PRODUCT_FACADE.addOrder(pDTO);
@@ -70,6 +64,7 @@ public class ProductOrderResource {
     @PUT
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("user")
     public String requestRefund(@PathParam("orderId") int orderId) {
         PRODUCT_FACADE.requestRefund(orderId);
         return "{\"refundMsg\":" + "\"Refund has been requested and will be approved by an admin at some point.\"}";
@@ -78,6 +73,7 @@ public class ProductOrderResource {
     @DELETE
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public String refundOrder(@PathParam("orderId") int orderId) {
        double currentBalance = PRODUCT_FACADE.refundOrder(orderId);
        return "{\"refundMsg\":" + "\"Refund complete. Your balance is now: " + currentBalance + " DKK\"}";
