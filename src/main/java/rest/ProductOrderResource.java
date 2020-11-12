@@ -66,8 +66,8 @@ public class ProductOrderResource {
     @DELETE
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("admin")
-    public String refundOrder(@PathParam("orderId") int orderId) {
+//    @RolesAllowed("admin")
+    public String refundOrder(@PathParam("orderId") int orderId) throws MissingInput {
        double currentBalance = ORDER_FACADE.refundOrder(orderId);
        return "{\"refundMsg\":" + "\"Refund complete. Your balance is now: " + currentBalance + " DKK\"}";
     }

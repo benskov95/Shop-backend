@@ -68,10 +68,14 @@ public class ProductOrderFacade {
         }
     } 
     
-    public double refundOrder(int orderId) {
+    public double refundOrder(int orderId) throws MissingInput {
         EntityManager em = emf.createEntityManager();
         ProductOrder p = em.find(ProductOrder.class, orderId);
         User user = em.find(User.class, p.getUser().getUsername());
+        
+        if (!p.getHasRequestedRefund()) {
+            throw new MissingInput("This order has not had a refund requested.");
+        }
         
         try {
         em.getTransaction().begin();
