@@ -6,6 +6,7 @@ import entities.ProductOrder;
 import entities.ProductOrderline;
 import entities.Role;
 import entities.User;
+import errorhandling.InsufficientFunds;
 import errorhandling.MissingInput;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +59,12 @@ public class ProductOrderFacadeTest {
     }
     
     @Test
+    public void testGetOrderById() {
+        ProductOrderDTO pDTO = facade.getOrderById(order2.getId());
+        assertEquals(pDTO.getUsername(), order2.getUser().getUsername());
+    }
+    
+    @Test
     public void testGetOrdersByUsername() {
         List<ProductOrderDTO> orderDTOs = facade.getOrdersByUsername(user.getUsername());
         for (ProductOrderDTO pDTO : orderDTOs) {
@@ -77,7 +85,18 @@ public class ProductOrderFacadeTest {
         double currentBalance = admin.getBalance();
         facade.requestRefund(id);
         double newBalance = facade.refundOrder(id);
-        assertTrue(admin.getBalance() > currentBalance);
+        assertTrue(newBalance > currentBalance);
+    }
+    
+    @Test
+    public void testAddOrder() throws InsufficientFunds, MissingInput {
+        ProductOrder newOrder = new ProductOrder(user);
+        ProductOrderline ol6 = new ProductOrderline(p2, 7);
+        newOrder.addOrderline(ol6);
+        ProductOrderDTO newOrderDTO = new ProductOrderDTO(newOrder);
+        ProductOrderDTO addedDTO = facade.addOrder(newOrderDTO);
+        ProductOrderDTO compareDTO = facade.getOrderById(addedDTO.getId());
+        assertTrue(compareDTO.getUsername().equals(addedDTO.getUsername()));
     }
     
     private void setUpTestData(EntityManager em) {
@@ -85,6 +104,8 @@ public class ProductOrderFacadeTest {
         try {
             user.addRole(r1);
             admin.addRole(r2);
+            user.setBalance(500);
+            admin.setBalance(500);
             order1.addOrderline(ol1);
             order1.addOrderline(ol2);
             order2.addOrderline(ol3);

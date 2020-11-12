@@ -42,7 +42,13 @@ public class ProductOrderFacade {
         return orderDTOs;
     }
     
-   public List<ProductOrderDTO> getOrdersByUsername(String username) {
+    public ProductOrderDTO getOrderById(int id) {
+        EntityManager em = emf.createEntityManager();
+        ProductOrder p = em.find(ProductOrder.class, id);
+        return new ProductOrderDTO(p);
+    } 
+    
+    public List<ProductOrderDTO> getOrdersByUsername(String username) {
         EntityManager em = emf.createEntityManager();
         Query q = em.createQuery("SELECT p from ProductOrder p WHERE p.user.username = :username");
         q.setParameter("username", username);

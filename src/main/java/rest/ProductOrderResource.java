@@ -36,6 +36,15 @@ public class ProductOrderResource {
     }
     
     @GET
+    @Path("id/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"user", "admin"})
+    public String getOrderById(@PathParam("id") int id) {
+        ProductOrderDTO pDTO = ORDER_FACADE.getOrderById(id);
+        return GSON.toJson(pDTO);
+    }
+    
+    @GET
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
