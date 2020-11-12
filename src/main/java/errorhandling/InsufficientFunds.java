@@ -1,4 +1,4 @@
-package security.errorhandling;
+package errorhandling;
 
 public class InsufficientFunds extends Exception{
 

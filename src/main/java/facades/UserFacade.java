@@ -110,7 +110,7 @@ public class UserFacade {
         }
     }
 
-    public void checkRole(User user, EntityManager em){
+    private void checkRole(User user, EntityManager em){
         String param;
         if (user.getUsername().equals("admin")) {
             param = "admin";
@@ -122,7 +122,7 @@ public class UserFacade {
         user.addRole((Role) query.getSingleResult());
     }
     
-    public void addInitialRoles(EntityManager em) {
+    private void addInitialRoles(EntityManager em) {
         Query query = em.createQuery("SELECT r FROM Role r");
         if (query.getResultList().isEmpty()) {
             em.getTransaction().begin();

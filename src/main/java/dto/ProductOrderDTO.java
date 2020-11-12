@@ -11,11 +11,6 @@ public class ProductOrderDTO {
     private String username;
     private boolean hasRequestedRefund;
     private List<ProductOrderlineDTO> orderlines;
-
-    public ProductOrderDTO(String username, List<ProductOrderlineDTO> orderlines) {
-        this.username = username;
-        this.orderlines = orderlines;
-    }
     
     public ProductOrderDTO(ProductOrder order) {
         this.id = order.getId();

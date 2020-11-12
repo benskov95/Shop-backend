@@ -1,35 +1,26 @@
 package dto;
 
-import entities.ProductOrderline;
+import entities.Product;
 
-public class ProductOrderlineDTO {
+public class ProductDTO {
     
-    private int orderlineId;
     private int productId;
     private String title;
     private double price;
     private String description;
     private String category;
     private String image;
-    private int quantity;
 
-    public ProductOrderlineDTO(ProductOrderline orderline) {
-        this.orderlineId = orderline.getId();
-        this.productId = orderline.getProduct().getId();
-        this.title = orderline.getProduct().getTitle();
-        this.price = orderline.getProduct().getPrice();
-        this.description = orderline.getProduct().getDescription();
-        this.category = orderline.getProduct().getCategory();
-        this.image = orderline.getProduct().getImage();
-        this.quantity = orderline.getQuantity();
+    public ProductDTO(Product product) {
+        this.productId = product.getId();
+        this.title = product.getTitle();
+        this.price = product.getPrice();
+        this.description = product.getDescription();
+        this.category = product.getCategory();
+        this.image = product.getImage();
     }
 
-    public int getOrderlineId() {
-        return orderlineId;
-    }
-
-    public void setOrderlineId(int orderlineId) {
-        this.orderlineId = orderlineId;
+    public ProductDTO() {
     }
 
     public int getProductId() {
@@ -79,9 +70,7 @@ public class ProductOrderlineDTO {
     public void setImage(String image) {
         this.image = image;
     }
-
-    public int getQuantity() {
-        return quantity;
-    }
+    
+    
     
 }

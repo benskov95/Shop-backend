@@ -11,7 +11,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import security.errorhandling.InsufficientFunds;
+import errorhandling.InsufficientFunds;
+import errorhandling.MissingInput;
 
 public class ProductOrderFacade {
     
@@ -83,7 +84,7 @@ public class ProductOrderFacade {
         }
     }
     
-    public ProductOrderDTO addOrder(ProductOrderDTO orderDTO) throws InsufficientFunds {
+    public ProductOrderDTO addOrder(ProductOrderDTO orderDTO) throws InsufficientFunds, MissingInput {
         EntityManager em = emf.createEntityManager();
         User user = em.find(User.class, orderDTO.getUsername());
         ProductOrder order = new ProductOrder(user);
@@ -100,8 +101,16 @@ public class ProductOrderFacade {
         }
     }
     
-    public void prepareOrder(ProductOrder order, ProductOrderDTO orderDTO) {
+    private void prepareOrder(ProductOrder order, ProductOrderDTO orderDTO) throws MissingInput {
         for (ProductOrderlineDTO orderlineDTO : orderDTO.getOrderlines()) {
+            if (orderlineDTO.getTitle().length() < 3 ||
+            orderlineDTO.getPrice() < 0.1 ||
+            orderlineDTO.getDescription().length() < 5 ||
+            orderlineDTO.getCategory().length() < 3 ||
+            orderlineDTO.getImage().length() < 5) 
+        {
+            throw new MissingInput("All fields must be filled out.");
+        } else {
             Product product = new Product(
                     orderlineDTO.getTitle(), 
                     orderlineDTO.getPrice(), 
@@ -109,10 +118,11 @@ public class ProductOrderFacade {
                     orderlineDTO.getCategory(), 
                     orderlineDTO.getImage());
             order.addOrderline(new ProductOrderline(product, orderlineDTO.getQuantity()));
+            }
         }
     }
     
-    public void finalizeOrder(ProductOrder order) throws InsufficientFunds {
+    private void finalizeOrder(ProductOrder order) throws InsufficientFunds {
         order.calcTotalPrice();
         if (order.getUser().getBalance() < order.getTotalPrice()) {
             throw new InsufficientFunds("You do not have enough money to make this purchase.");
@@ -123,10 +133,10 @@ public class ProductOrderFacade {
     
     private void checkIfProductExists(ProductOrder p, EntityManager em) {
         for (ProductOrderline ol : p.getOrderlines()) {    
-            Query query = em.createQuery("SELECT p FROM Product p WHERE p.title = :title");
-            query.setParameter("title", ol.getProduct().getTitle());
-            if (query.getResultList().size() > 0) {
-                 ol.setProduct((Product) query.getResultList().get(0));
+            Query q = em.createQuery("SELECT p FROM Product p WHERE p.title = :title");
+            q.setParameter("title", ol.getProduct().getTitle());
+            if (q.getResultList().size() > 0) {
+                 ol.setProduct((Product) q.getResultList().get(0));
             }
         }
     }

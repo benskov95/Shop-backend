@@ -3,16 +3,8 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.ProductOrderDTO;
-import dto.ProductOrderlineDTO;
 import facades.ProductOrderFacade;
-import facades.UserFacade;
-import fetchers.ExampleFetcher;
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -24,21 +16,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import security.errorhandling.InsufficientFunds;
+import errorhandling.InsufficientFunds;
+import errorhandling.MissingInput;
 import utils.EMF_Creator;
 
-@Path("order")
+@Path("orders")
 public class ProductOrderResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    public static final ProductOrderFacade PRODUCT_FACADE = ProductOrderFacade.getProductFacade(EMF);
+    public static final ProductOrderFacade ORDER_FACADE = ProductOrderFacade.getProductFacade(EMF);
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
     public String getAllOrders() {
-        List<ProductOrderDTO> orderDTOs = PRODUCT_FACADE.getAllOrders();
+        List<ProductOrderDTO> orderDTOs = ORDER_FACADE.getAllOrders();
         return GSON.toJson(orderDTOs);
     }
     
@@ -47,7 +40,7 @@ public class ProductOrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
     public String getOrdersByUsername(@PathParam("username") String username) {
-        List<ProductOrderDTO> orderDTOs = PRODUCT_FACADE.getOrdersByUsername(username);
+        List<ProductOrderDTO> orderDTOs = ORDER_FACADE.getOrdersByUsername(username);
         return GSON.toJson(orderDTOs);
     }
     
@@ -55,9 +48,9 @@ public class ProductOrderResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("user")
-    public String addOrder(String productOrderDTO) throws InsufficientFunds {
+    public String addOrder(String productOrderDTO) throws InsufficientFunds, MissingInput {
         ProductOrderDTO pDTO = GSON.fromJson(productOrderDTO, ProductOrderDTO.class);
-        ProductOrderDTO addedDTO = PRODUCT_FACADE.addOrder(pDTO);
+        ProductOrderDTO addedDTO = ORDER_FACADE.addOrder(pDTO);
         return GSON.toJson(addedDTO);
     }
     
@@ -66,7 +59,7 @@ public class ProductOrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("user")
     public String requestRefund(@PathParam("orderId") int orderId) {
-        PRODUCT_FACADE.requestRefund(orderId);
+        ORDER_FACADE.requestRefund(orderId);
         return "{\"refundMsg\":" + "\"Refund has been requested and will be approved by an admin at some point.\"}";
     }
     
@@ -75,7 +68,7 @@ public class ProductOrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
     public String refundOrder(@PathParam("orderId") int orderId) {
-       double currentBalance = PRODUCT_FACADE.refundOrder(orderId);
+       double currentBalance = ORDER_FACADE.refundOrder(orderId);
        return "{\"refundMsg\":" + "\"Refund complete. Your balance is now: " + currentBalance + " DKK\"}";
     }
     
