@@ -6,12 +6,14 @@ import entities.ProductOrder;
 import entities.ProductOrderline;
 import entities.Role;
 import entities.User;
+import errorhandling.MissingInput;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,30 @@ public class ProductOrderFacadeTest {
         assertEquals(baseNumberOfOrders, orderDTOs.size());
     }
     
+    @Test
+    public void testGetOrdersByUsername() {
+        List<ProductOrderDTO> orderDTOs = facade.getOrdersByUsername(user.getUsername());
+        for (ProductOrderDTO pDTO : orderDTOs) {
+            assertEquals(user.getUsername(), pDTO.getUsername());
+        }
+    }
+    
+    @Test
+    public void testRequestRefund() {
+        facade.requestRefund(order1.getId());
+        List<ProductOrderDTO> orderDTOs = facade.getOrdersByUsername(order1.getUser().getUsername());
+        assertTrue(orderDTOs.get(0).getHasRequestedRefund());
+    }
+    
+    @Test
+    public void testRefundOrder() throws MissingInput {
+        int id = admin.getOrders().get(0).getId();
+        double currentBalance = admin.getBalance();
+        facade.requestRefund(id);
+        double newBalance = facade.refundOrder(id);
+        assertTrue(admin.getBalance() > currentBalance);
+    }
+    
     private void setUpTestData(EntityManager em) {
         setValues();
         try {
@@ -70,8 +96,9 @@ public class ProductOrderFacadeTest {
             admin.getOrders().add(order2);
             
             em.getTransaction().begin();
-            em.createNamedQuery("ProductOrder.deleteAllRows").executeUpdate();
+            em.createNamedQuery("ProductOrderline.deleteAllRows").executeUpdate();
             em.createNamedQuery("Product.deleteAllRows").executeUpdate();
+            em.createNamedQuery("ProductOrder.deleteAllRows").executeUpdate();
             em.createNamedQuery("Roles.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.persist(user);

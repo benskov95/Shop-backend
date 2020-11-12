@@ -9,9 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQuery (name = "ProductOrderline.deleteAllRows", query = "DELETE FROM ProductOrderline")
 @Table(name = "productorderline")
 public class ProductOrderline implements Serializable {
 
