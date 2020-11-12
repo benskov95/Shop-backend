@@ -33,7 +33,7 @@ public class User implements Serializable {
   @ManyToMany (cascade = CascadeType.PERSIST)
   private List<Role> roleList = new ArrayList<>();
   
-    @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
   private List<ProductOrder> orders = new ArrayList<>();
 
   public List<String> getRolesAsStrings() {
@@ -88,5 +88,13 @@ public class User implements Serializable {
   public void addRole(Role userRole) {
     roleList.add(userRole);
   }
+
+    public List<ProductOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<ProductOrder> orders) {
+        this.orders = orders;
+    }
 
 }

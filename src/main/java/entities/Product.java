@@ -1,29 +1,40 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "product")
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column (name = "product_id")
     private int id;
+    @Column (name = "title")
     private String title;
+    @Column (name = "price")
     private double price;
+    @Column (name = "description", length = 300)
     private String description;
+    @Column (name = "category")
     private String category;
+    @Column (name = "image")
     private String image;
     
-    @OneToMany(mappedBy = "product")
-    private List<ProductOrderline> productOrderlines;
-    
+    @ManyToMany
+    @JoinColumn(name = "productorder_id", referencedColumnName = "order_id")
+    private List<ProductOrder> orders = new ArrayList<>();
 
     public Product(String title, double price, String description, String category, String image) {
         this.title = title;
@@ -79,7 +90,13 @@ public class Product implements Serializable {
     public void setImage(String image) {
         this.image = image;
     }
-    
-    
+
+    public List<ProductOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<ProductOrder> orders) {
+        this.orders = orders;
+    }
     
 }
