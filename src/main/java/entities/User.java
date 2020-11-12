@@ -33,7 +33,7 @@ public class User implements Serializable {
   @ManyToMany (cascade = CascadeType.PERSIST)
   private List<Role> roleList = new ArrayList<>();
   
-  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<ProductOrder> orders = new ArrayList<>();
   
   @Column (name = "balance")

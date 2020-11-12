@@ -1,8 +1,9 @@
-
 package dto;
 
 public class ProductOrderlineDTO {
     
+    private int orderlineId;
+    private int productId;
     private String title;
     private double price;
     private String description;
@@ -17,6 +18,33 @@ public class ProductOrderlineDTO {
         this.category = category;
         this.image = image;
         this.quantity = quantity;
+    }
+
+    public ProductOrderlineDTO(int orderlineId, int productId, String title, double price, String description, String category, String image, int quantity) {
+        this.orderlineId = orderlineId;
+        this.productId = productId;
+        this.title = title;
+        this.price = price;
+        this.description = description;
+        this.category = category;
+        this.image = image;
+        this.quantity = quantity;
+    }
+
+    public int getOrderlineId() {
+        return orderlineId;
+    }
+
+    public void setOrderlineId(int orderlineId) {
+        this.orderlineId = orderlineId;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public String getTitle() {
