@@ -1,16 +1,20 @@
 package facades;
 
+import dto.ProductOrderDTO;
 import entities.Product;
 import entities.ProductOrder;
 import entities.ProductOrderline;
 import entities.Role;
 import entities.User;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
 public class ProductOrderFacadeTest {
@@ -33,8 +37,6 @@ public class ProductOrderFacadeTest {
     public static void tearDownClass() {
     }
 
-    // Setup the DataBase in a known state BEFORE EACH TEST
-
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
@@ -43,7 +45,13 @@ public class ProductOrderFacadeTest {
 
     @AfterEach
     public void tearDown() {
-//        Remove any data after each test was run
+    }
+    
+    @Test
+    public void testGetAllOrders() {
+        List<ProductOrderDTO> orderDTOs = facade.getAllOrders();
+        int baseNumberOfOrders = 2;
+        assertEquals(baseNumberOfOrders, orderDTOs.size());
     }
     
     private void setUpTestData(EntityManager em) {
