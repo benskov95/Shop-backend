@@ -36,10 +36,7 @@ public class ProductOrderFacade {
         
         List<ProductOrderDTO> orderDTOs = new ArrayList<>();
         for (ProductOrder order : orders) {
-            orderDTOs.add(new ProductOrderDTO(
-                    order.getId(), 
-                    order.getUser().getUsername(), 
-                    order.getHasRequestedRefund()));
+            orderDTOs.add(new ProductOrderDTO(order));
         }
         return orderDTOs;
     }
@@ -64,16 +61,7 @@ public class ProductOrderFacade {
         List<ProductOrderline> orderlines = p.getOrderlines();
         List<ProductOrderlineDTO> olDTOs = new ArrayList<>();
         for (ProductOrderline ol : orderlines) {
-            olDTOs.add(new ProductOrderlineDTO(
-                    ol.getId(), 
-                    ol.getProduct().getId(),
-                    ol.getProduct().getTitle(), 
-                    ol.getProduct().getPrice(), 
-                    ol.getProduct().getDescription(), 
-                    ol.getProduct().getCategory(), 
-                    ol.getProduct().getImage(),
-                    ol.getQuantity()
-            ));
+            olDTOs.add(new ProductOrderlineDTO(ol));
         }
         
         return olDTOs;

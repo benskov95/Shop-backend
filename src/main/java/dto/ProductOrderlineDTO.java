@@ -1,5 +1,7 @@
 package dto;
 
+import entities.ProductOrderline;
+
 public class ProductOrderlineDTO {
     
     private int orderlineId;
@@ -20,15 +22,15 @@ public class ProductOrderlineDTO {
         this.quantity = quantity;
     }
 
-    public ProductOrderlineDTO(int orderlineId, int productId, String title, double price, String description, String category, String image, int quantity) {
-        this.orderlineId = orderlineId;
-        this.productId = productId;
-        this.title = title;
-        this.price = price;
-        this.description = description;
-        this.category = category;
-        this.image = image;
-        this.quantity = quantity;
+    public ProductOrderlineDTO(ProductOrderline orderline) {
+        this.orderlineId = orderline.getId();
+        this.productId = orderline.getProduct().getId();
+        this.title = orderline.getProduct().getTitle();
+        this.price = orderline.getProduct().getPrice();
+        this.description = orderline.getProduct().getDescription();
+        this.category = orderline.getProduct().getCategory();
+        this.image = orderline.getProduct().getImage();
+        this.quantity = orderline.getQuantity();
     }
 
     public int getOrderlineId() {
