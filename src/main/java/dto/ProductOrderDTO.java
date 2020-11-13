@@ -11,12 +11,14 @@ public class ProductOrderDTO {
     private String username;
     private boolean hasRequestedRefund;
     private List<ProductOrderlineDTO> orderlines;
+    private double totalPrice;
     
     public ProductOrderDTO(ProductOrder order) {
         this.id = order.getId();
         this.username = order.getUser().getUsername();
         this.hasRequestedRefund = order.getHasRequestedRefund();
         this.orderlines = convertListToDTO(order.getOrderlines());
+        this.totalPrice = order.calcTotalPrice();
     }
 
     public int getId() {
@@ -57,6 +59,14 @@ public class ProductOrderDTO {
 
     public void setHasRequestedRefund(boolean hasRequestedRefund) {
         this.hasRequestedRefund = hasRequestedRefund;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
     
 }

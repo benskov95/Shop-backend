@@ -80,6 +80,15 @@ public class ProductOrderFacadeTest {
     }
     
     @Test
+    public void testDenyRefund() throws MissingInput {
+        facade.requestRefund(order1.getId());
+        boolean before = facade.getOrderById(order1.getId()).getHasRequestedRefund();
+        facade.denyRefund(order1.getId());
+        boolean after = facade.getOrderById(order1.getId()).getHasRequestedRefund();
+        assertTrue (before != after);
+    }
+    
+    @Test
     public void testRefundOrder() throws MissingInput {
         int id = admin.getOrders().get(0).getId();
         double currentBalance = admin.getBalance();
@@ -97,7 +106,7 @@ public class ProductOrderFacadeTest {
         ProductOrderDTO newOrderDTO = new ProductOrderDTO(newOrder);
         ProductOrderDTO addedDTO = facade.addOrder(newOrderDTO);
         ProductOrderDTO compareDTO = facade.getOrderById(addedDTO.getId());
-        assertTrue(compareDTO.getUsername().equals(addedDTO.getUsername()));
+        assertTrue(compareDTO.getTotalPrice() == addedDTO.getTotalPrice());
     }
     
     @Test

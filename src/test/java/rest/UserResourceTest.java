@@ -27,9 +27,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
-
 public class UserResourceTest {
 
     private static final int SERVER_PORT = 7777;
@@ -78,6 +78,9 @@ public class UserResourceTest {
         both = new User("user_admin", "test123");
         try {
             em.getTransaction().begin();
+            em.createNamedQuery("ProductOrderline.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Product.deleteAllRows").executeUpdate();
+            em.createNamedQuery("ProductOrder.deleteAllRows").executeUpdate();
             em.createNamedQuery("Roles.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             Role userRole = new Role("user");

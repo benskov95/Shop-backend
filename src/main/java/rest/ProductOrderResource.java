@@ -64,7 +64,7 @@ public class ProductOrderResource {
     }
     
     @PUT
-    @Path("{orderId}")
+    @Path("request/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("user")
     public String requestRefund(@PathParam("orderId") int orderId) {
@@ -72,10 +72,19 @@ public class ProductOrderResource {
         return "{\"refundMsg\":" + "\"Refund has been requested and will be approved by an admin at some point.\"}";
     }
     
+    @PUT
+    @Path("deny/{orderId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
+    public String denyRefund(@PathParam("orderId") int orderId) throws MissingInput {
+        ORDER_FACADE.denyRefund(orderId);
+        return "{\"refundMsg\":" + "\"Refund has been denied.\"}";
+    }
+    
     @DELETE
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed("admin")
+    @RolesAllowed("admin")
     public String refundOrder(@PathParam("orderId") int orderId) throws MissingInput {
        double currentBalance = ORDER_FACADE.refundOrder(orderId);
        return "{\"refundMsg\":" + "\"Refund complete. Your balance is now: " + currentBalance + " DKK\"}";

@@ -72,7 +72,24 @@ public class ProductOrderFacade {
         } finally {
             em.close();
         }
-    } 
+    }
+    
+    public void denyRefund(int orderId) throws MissingInput {
+        EntityManager em = emf.createEntityManager();
+        ProductOrder p = em.find(ProductOrder.class, orderId);
+        
+        if (!p.getHasRequestedRefund()) {
+            throw new MissingInput("A refund request has not been made for this order.");
+        }
+        
+        try {
+            em.getTransaction().begin();
+            p.setHasRequestedRefund(false);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
     
     public double refundOrder(int orderId) throws MissingInput {
         EntityManager em = emf.createEntityManager();
@@ -133,8 +150,7 @@ public class ProductOrderFacade {
     }
     
     private void finalizeOrder(ProductOrder order) throws InsufficientFunds {
-        order.calcTotalPrice();
-        if (order.getUser().getBalance() < order.getTotalPrice()) {
+        if (order.getUser().getBalance() < order.calcTotalPrice()) {
             throw new InsufficientFunds("You do not have enough money to make this purchase.");
         } else {
             order.getUser().setBalance(order.getUser().getBalance() - order.getTotalPrice());

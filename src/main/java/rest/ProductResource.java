@@ -32,7 +32,7 @@ public class ProductResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String getAllProducts() {
         List<ProductDTO> productDTOs = PRODUCT_FACADE.getAllProducts();
         return GSON.toJson(productDTOs);
@@ -41,7 +41,7 @@ public class ProductResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String getProductById(@PathParam("id") int id) {
         ProductDTO pDTO = PRODUCT_FACADE.getProductById(id);
         return GSON.toJson(pDTO);
@@ -50,7 +50,7 @@ public class ProductResource {
     @GET
     @Path("fetch")
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"user", "admin"})
     public String externalFetchProducts() {
         return "";
     }
@@ -58,7 +58,7 @@ public class ProductResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed("admin")
+    @RolesAllowed("admin")
     public String addProduct(String product) throws AlreadyExists, MissingInput {
         ProductDTO pDTO = GSON.fromJson(product, ProductDTO.class);
         ProductDTO addedProduct = PRODUCT_FACADE.addProduct(pDTO);
@@ -68,7 +68,7 @@ public class ProductResource {
     @DELETE
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed("admin")
+    @RolesAllowed("admin")
     public String deleteProduct(@PathParam("id") int id) throws AlreadyExists {
         ProductDTO deletedProduct = PRODUCT_FACADE.deleteProduct(id);
         return GSON.toJson(deletedProduct);
@@ -78,7 +78,7 @@ public class ProductResource {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed("admin")
+    @RolesAllowed("admin")
     public String editProduct(@PathParam("id") int id, String product) throws AlreadyExists, MissingInput {
         ProductDTO pDTO = GSON.fromJson(product, ProductDTO.class);
         pDTO.setProductId(id);

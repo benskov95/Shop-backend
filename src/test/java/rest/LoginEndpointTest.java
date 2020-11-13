@@ -65,9 +65,11 @@ public class LoginEndpointTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            //Delete existing users and roles to get a "fresh" database
-            em.createQuery("delete from User").executeUpdate();
-            em.createQuery("delete from Role").executeUpdate();
+            em.createNamedQuery("ProductOrderline.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Product.deleteAllRows").executeUpdate();
+            em.createNamedQuery("ProductOrder.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Roles.deleteAllRows").executeUpdate();
+            em.createNamedQuery("User.deleteAllRows").executeUpdate();
 
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");

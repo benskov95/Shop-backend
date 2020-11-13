@@ -64,10 +64,11 @@ public class ProductOrder implements Serializable {
         this.totalPrice = totalPrice;
     }
     
-    public void calcTotalPrice() {
+    public double calcTotalPrice() {
         for (ProductOrderline ol : this.orderlines) {
             this.totalPrice += ol.getProduct().getPrice() * ol.getQuantity();
         }
+        return this.totalPrice;
     }
 
     public User getUser() {
