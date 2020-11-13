@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--<Context path="/jpareststarter"/>-->
-<Context path="/ca3-ben">
+<Context path="/api-ca3">
   <!--    <Resource name="jdbc/DATABASE1"
              driverClassName="com.mysql.cj.jdbc.Driver"
              auth="Container"
