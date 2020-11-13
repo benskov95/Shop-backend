@@ -25,7 +25,7 @@ public class ProductOrderResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    public static final ProductOrderFacade ORDER_FACADE = ProductOrderFacade.getProductFacade(EMF);
+    public static final ProductOrderFacade ORDER_FACADE = ProductOrderFacade.getProductOrderFacade(EMF);
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)

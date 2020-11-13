@@ -14,8 +14,8 @@ import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ public class ProductOrderFacadeTest {
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = ProductOrderFacade.getProductFacade(emf);
+        facade = ProductOrderFacade.getProductOrderFacade(emf);
     }
 
     @AfterAll
@@ -93,10 +93,24 @@ public class ProductOrderFacadeTest {
         ProductOrder newOrder = new ProductOrder(user);
         ProductOrderline ol6 = new ProductOrderline(p2, 7);
         newOrder.addOrderline(ol6);
+        
         ProductOrderDTO newOrderDTO = new ProductOrderDTO(newOrder);
         ProductOrderDTO addedDTO = facade.addOrder(newOrderDTO);
         ProductOrderDTO compareDTO = facade.getOrderById(addedDTO.getId());
         assertTrue(compareDTO.getUsername().equals(addedDTO.getUsername()));
+    }
+    
+    @Test
+    public void testInsufficientFunds() {
+        ProductOrder newOrder = new ProductOrder(admin);
+        ProductOrderline ol6 = new ProductOrderline(p2, 7);
+        newOrder.addOrderline(ol6);
+        
+        InsufficientFunds thrown =
+            assertThrows(InsufficientFunds.class, () ->  {
+                facade.addOrder(new ProductOrderDTO(newOrder));
+                });
+        assertTrue(thrown.getMessage().equals("You do not have enough money to make this purchase."));
     }
     
     private void setUpTestData(EntityManager em) {
@@ -105,7 +119,7 @@ public class ProductOrderFacadeTest {
             user.addRole(r1);
             admin.addRole(r2);
             user.setBalance(500);
-            admin.setBalance(500);
+            admin.setBalance(0);
             order1.addOrderline(ol1);
             order1.addOrderline(ol2);
             order2.addOrderline(ol3);

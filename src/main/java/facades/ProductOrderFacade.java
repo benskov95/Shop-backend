@@ -22,7 +22,7 @@ public class ProductOrderFacade {
     private ProductOrderFacade() {
     }
 
-    public static ProductOrderFacade getProductFacade(EntityManagerFactory _emf) {
+    public static ProductOrderFacade getProductOrderFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new ProductOrderFacade();
