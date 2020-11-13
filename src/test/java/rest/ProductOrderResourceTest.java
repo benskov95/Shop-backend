@@ -220,6 +220,22 @@ public class ProductOrderResourceTest {
     }
     
     @Test
+    public void testConvertPriceExternally() {
+        double amount = 33.5;
+        
+        login("admin", "test123");
+        given()
+                .header("x-access-token", securityToken)
+                .contentType("application/json")
+                .get("/orders/convert/{amount}", amount)
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .body("base", equalTo("USD"));      
+    }
+    
+    @Test
     public void testInsufficientFundsWhenOrdering() {
         changeUserBalance(0);
         ProductOrderDTO pDTO = setUpTestOrder(user);

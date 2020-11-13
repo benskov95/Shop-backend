@@ -18,6 +18,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import errorhandling.InsufficientFunds;
 import errorhandling.MissingInput;
+import fetchers.PriceConversionFetcher;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import utils.EMF_Creator;
 
 @Path("orders")
@@ -26,10 +32,11 @@ public class ProductOrderResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final ProductOrderFacade ORDER_FACADE = ProductOrderFacade.getProductOrderFacade(EMF);
+    private static ExecutorService es = Executors.newCachedThreadPool();
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed("admin")
+    @RolesAllowed("admin")
     public String getAllOrders() {
         List<ProductOrderDTO> orderDTOs = ORDER_FACADE.getAllOrders();
         return GSON.toJson(orderDTOs);
@@ -56,11 +63,20 @@ public class ProductOrderResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-//    @RolesAllowed("user")
+    @RolesAllowed("user")
     public String addOrder(String productOrderDTO) throws InsufficientFunds, MissingInput {
         ProductOrderDTO pDTO = GSON.fromJson(productOrderDTO, ProductOrderDTO.class);
         ProductOrderDTO addedDTO = ORDER_FACADE.addOrder(pDTO);
         return GSON.toJson(addedDTO);
+    }
+    
+    @GET
+    @Path("convert/{amount}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"user", "admin"})
+    public String convertPriceExternally(@PathParam("amount") double amount) throws InterruptedException, ExecutionException, TimeoutException, IOException {
+        String jsonProducts = PriceConversionFetcher.fetchPriceConversion(es, GSON, amount);
+        return jsonProducts;
     }
     
     @PUT

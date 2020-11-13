@@ -8,6 +8,7 @@ import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -202,6 +203,24 @@ public class ProductResourceTest {
                 .body("description", equalTo(editDTO.getDescription()));
                 
     }
+
+// Not working
+    
+//    @Test
+//    public void testFetchProductsExternally() {
+//       List<ProductDTO> productList;
+//
+//       login("user", "test123");
+//       productList = given()
+//                .header("x-access-token", securityToken)
+//                .contentType("application/json")
+//                .get("/fetch-products")
+//                .then()
+//                .extract().body().jsonPath().getList("", ProductDTO.class);
+//
+//
+//        assertThat(productList.size(), equalTo(20));
+//    }
     
     @Test
     public void testMissingInputWhenEditing() {

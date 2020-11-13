@@ -6,9 +6,13 @@ import dto.ProductDTO;
 import errorhandling.AlreadyExists;
 import errorhandling.MissingInput;
 import facades.ProductFacade;
+import fetchers.ProductFetcher;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -48,11 +52,12 @@ public class ProductResource {
     }
     
     @GET
-    @Path("fetch")
+    @Path("fetch-products")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
-    public String externalFetchProducts() {
-        return "";
+    public String fetchProductsExternally() throws InterruptedException, ExecutionException, TimeoutException, IOException {
+        String jsonProducts = ProductFetcher.fetchProducts(es, GSON);
+        return jsonProducts;
     }
     
     @POST
