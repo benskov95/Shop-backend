@@ -47,9 +47,9 @@ public class ProductFacade {
     public ProductDTO addProduct(ProductDTO pDTO) throws AlreadyExists, MissingInput {
         EntityManager em = emf.createEntityManager();
         Product product = new Product();
-        prepareProduct(pDTO, product);
         checkInput(pDTO);
-        checkIfProductExists(product, em);
+        checkIfProductExists(pDTO, em);
+        prepareProduct(pDTO, product);
         
         try {
             em.getTransaction().begin();
@@ -79,9 +79,12 @@ public class ProductFacade {
     public ProductDTO editProduct(ProductDTO pDTO) throws AlreadyExists, MissingInput {
         EntityManager em = emf.createEntityManager();
         Product product = em.find(Product.class, pDTO.getProductId());
+        
         checkInput(pDTO);
+        if (!product.getTitle().equals(pDTO.getTitle())) {
+        checkIfProductExists(pDTO, em);
+        }
         prepareProduct(pDTO, product);
-        checkIfProductExists(product, em);
         
         try {
             em.getTransaction().begin();
@@ -101,23 +104,23 @@ public class ProductFacade {
         p.setImage(pDTO.getImage());
     }
     
-    private void checkIfProductExists(Product p, EntityManager em) throws AlreadyExists {
+    private void checkIfProductExists(ProductDTO pDTO, EntityManager em) throws AlreadyExists {
         Query q = em.createQuery("SELECT p FROM Product p WHERE p.title = :title");
-        q.setParameter("title", p.getTitle());
+        q.setParameter("title", pDTO.getTitle());
         if (q.getResultList().size() > 0) {
             throw new AlreadyExists("This product already exists in the database.");
         }
     }
     
     private void checkInput(ProductDTO pDTO) throws MissingInput {
-        if (pDTO.getTitle().length() < 3 ||
+         if (pDTO.getTitle().isEmpty() ||
             pDTO.getPrice() < 0.1 ||
-            pDTO.getDescription().length() < 5 ||
-            pDTO.getCategory().length() < 3 ||
-            pDTO.getImage().length() < 5) 
+            pDTO.getDescription().isEmpty() ||
+            pDTO.getCategory().isEmpty() ||
+            pDTO.getImage().isEmpty()) 
         {
             throw new MissingInput("All fields must be filled out.");
-        }
+        } 
     }
     
     private void isProductInUse(int id, EntityManager em) throws AlreadyExists {

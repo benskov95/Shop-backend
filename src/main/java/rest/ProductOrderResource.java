@@ -29,7 +29,7 @@ public class ProductOrderResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("admin")
+//    @RolesAllowed("admin")
     public String getAllOrders() {
         List<ProductOrderDTO> orderDTOs = ORDER_FACADE.getAllOrders();
         return GSON.toJson(orderDTOs);
@@ -56,7 +56,7 @@ public class ProductOrderResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("user")
+//    @RolesAllowed("user")
     public String addOrder(String productOrderDTO) throws InsufficientFunds, MissingInput {
         ProductOrderDTO pDTO = GSON.fromJson(productOrderDTO, ProductOrderDTO.class);
         ProductOrderDTO addedDTO = ORDER_FACADE.addOrder(pDTO);

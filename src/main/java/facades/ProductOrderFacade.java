@@ -130,14 +130,15 @@ public class ProductOrderFacade {
     
     private void prepareOrder(ProductOrder order, ProductOrderDTO orderDTO) throws MissingInput {
         for (ProductOrderlineDTO orderlineDTO : orderDTO.getOrderlines()) {
-            if (orderlineDTO.getTitle().length() < 3 ||
+            if (orderlineDTO.getTitle().isEmpty() ||
             orderlineDTO.getPrice() < 0.1 ||
-            orderlineDTO.getDescription().length() < 5 ||
-            orderlineDTO.getCategory().length() < 3 ||
-            orderlineDTO.getImage().length() < 5) 
+            orderlineDTO.getDescription().isEmpty() ||
+            orderlineDTO.getCategory().isEmpty() ||
+            orderlineDTO.getImage().isEmpty()) 
         {
             throw new MissingInput("All fields must be filled out.");
         } else {
+            
             Product product = new Product(
                     orderlineDTO.getTitle(), 
                     orderlineDTO.getPrice(), 
@@ -150,7 +151,8 @@ public class ProductOrderFacade {
     }
     
     private void finalizeOrder(ProductOrder order) throws InsufficientFunds {
-        if (order.getUser().getBalance() < order.calcTotalPrice()) {
+        order.setTotalPrice(order.calcTotalPrice());
+        if (order.getUser().getBalance() < order.getTotalPrice()) {
             throw new InsufficientFunds("You do not have enough money to make this purchase.");
         } else {
             order.getUser().setBalance(order.getUser().getBalance() - order.getTotalPrice());

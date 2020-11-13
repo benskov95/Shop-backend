@@ -18,7 +18,7 @@ public class ProductOrderDTO {
         this.username = order.getUser().getUsername();
         this.hasRequestedRefund = order.getHasRequestedRefund();
         this.orderlines = convertListToDTO(order.getOrderlines());
-        this.totalPrice = order.calcTotalPrice();
+        this.totalPrice = order.getTotalPrice();
     }
 
     public int getId() {

@@ -27,7 +27,7 @@ import utils.EMF_Creator;
 
 public class ProductOrderResourceTest {
     
-     private static final int SERVER_PORT = 7777;
+    private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static User user, admin;
     private static Role r1, r2;
@@ -219,12 +219,32 @@ public class ProductOrderResourceTest {
                 .body("username", equalTo(user.getUsername()));
     }
     
+    @Test
+    public void testInsufficientFundsWhenOrdering() {
+        changeUserBalance(0);
+        ProductOrderDTO pDTO = setUpTestOrder(user);
+        
+        login("user", "test123");
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .body(pDTO)
+                .post("/orders")
+                .then()
+                .assertThat()
+                .statusCode(403)
+                .and()
+                .assertThat()
+                .body("message", equalTo("You do not have enough money to make this purchase."));
+                
+    }
+    
     private void setUpTestData(EntityManager em) {
     setValues();
     try {
         user.addRole(r1);
         admin.addRole(r2);
-        user.setBalance(500);
+        user.setBalance(400);
         admin.setBalance(0);
         order1.addOrderline(ol1);
         order1.addOrderline(ol2);
@@ -271,9 +291,20 @@ public class ProductOrderResourceTest {
         ProductOrder order = new ProductOrder(testUser);
         order.addOrderline(new ProductOrderline(p1, 5));
         order.addOrderline(new ProductOrderline(p2, 1));
-        order.calcTotalPrice();
         testUser.getOrders().add(order);
         return new ProductOrderDTO(order);
+    }
+    
+    private void changeUserBalance(double newBalance) {
+        EntityManager em = emf.createEntityManager();
+        try {
+        User testUser = em.find(User.class, user.getUsername());
+        em.getTransaction().begin();
+        testUser.setBalance(newBalance);
+        em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
     
 }
