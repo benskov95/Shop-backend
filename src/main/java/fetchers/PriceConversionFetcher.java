@@ -23,9 +23,9 @@ import utils.HttpUtils;
 
 public class PriceConversionFetcher {
     
-    public static String fetchPriceConversion(ExecutorService threadPool, Gson gson, double amount) throws InterruptedException, ExecutionException, TimeoutException, IOException {
+    public static String fetchPriceConversion(ExecutorService threadPool, Gson gson) throws InterruptedException, ExecutionException, TimeoutException, IOException {
         
-        String conversionUrl = "https://api.frankfurter.app/latest?amount=" + amount + "&from=USD&to=DKK";
+        String conversionUrl = "https://api.frankfurter.app/latest?to=USD,DKK";
 
         Callable <PriceConversionDTO> productsTask = new Callable<PriceConversionDTO>() {
             @Override

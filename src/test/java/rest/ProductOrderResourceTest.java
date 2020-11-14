@@ -19,6 +19,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasKey;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -221,18 +222,17 @@ public class ProductOrderResourceTest {
     
     @Test
     public void testConvertPriceExternally() {
-        double amount = 33.5;
         
-        login("admin", "test123");
+        login("user", "test123");
         given()
                 .header("x-access-token", securityToken)
                 .contentType("application/json")
-                .get("/orders/convert/{amount}", amount)
+                .get("/orders/convert")
                 .then()
                 .assertThat()
                 .statusCode(200)
                 .and()
-                .body("base", equalTo("USD"));      
+                .body("rates", hasKey("DKK"));      
     }
     
     @Test

@@ -71,11 +71,11 @@ public class ProductOrderResource {
     }
     
     @GET
-    @Path("convert/{amount}")
+    @Path("convert")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
-    public String convertPriceExternally(@PathParam("amount") double amount) throws InterruptedException, ExecutionException, TimeoutException, IOException {
-        String jsonProducts = PriceConversionFetcher.fetchPriceConversion(es, GSON, amount);
+    public String convertPriceExternally() throws InterruptedException, ExecutionException, TimeoutException, IOException {
+        String jsonProducts = PriceConversionFetcher.fetchPriceConversion(es, GSON);
         return jsonProducts;
     }
     
