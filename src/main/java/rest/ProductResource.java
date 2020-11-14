@@ -54,7 +54,6 @@ public class ProductResource {
     @GET
     @Path("fetch-products")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"user", "admin"})
     public String fetchProductsExternally() throws InterruptedException, ExecutionException, TimeoutException, IOException {
         String jsonProducts = ProductFetcher.fetchProducts(es, GSON);
         return jsonProducts;
