@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import errorhandling.InsufficientFunds;
 import errorhandling.MissingInput;
+import errorhandling.NotFoundException;
 
 public class ProductOrderFacade {
     
@@ -164,7 +165,9 @@ public class ProductOrderFacade {
             Query q = em.createQuery("SELECT p FROM Product p WHERE p.title = :title");
             q.setParameter("title", ol.getProduct().getTitle());
             if (q.getResultList().size() > 0) {
-                 ol.setProduct((Product) q.getResultList().get(0));
+                Product product = (Product) q.getResultList().get(0);
+                product.setPrice(ol.getProduct().getPrice());
+                 ol.setProduct(product);
             }
         }
     }

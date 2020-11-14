@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,14 +22,20 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "product_id")
     private int id;
+    
     @Column (name = "title")
     private String title;
+    
     @Column (name = "price")
     private double price;
-    @Column (name = "description", length = 300)
+    
+    @Lob
+    @Column (name = "description", length = 10000)
     private String description;
+    
     @Column (name = "category")
     private String category;
+    
     @Column (name = "image")
     private String image;
     

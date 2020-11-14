@@ -35,7 +35,6 @@ public class ProductOrderResourceTest {
     private static Product p1, p2, p3;
     private static ProductOrder order1, order2;
     private static ProductOrderline ol1, ol2, ol3, ol4, ol5;
-    private static final double ORDER2_TOTAL = 4384.5;
 
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
@@ -199,7 +198,7 @@ public class ProductOrderResourceTest {
                 .assertThat()
                 .statusCode(200)
                 .and()
-                .body("refundMsg", equalTo("Refund complete. Your balance is now: " + ORDER2_TOTAL + " DKK"));
+                .body("refundMsg", equalTo("Refund complete."));
     }
     
     @Test

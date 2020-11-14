@@ -1,6 +1,7 @@
 package rest;
 
 import entities.User;
+import facades.UserFacade;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -10,7 +11,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 import utils.EMF_Creator;
@@ -19,6 +22,7 @@ import utils.EMF_Creator;
 public class DemoResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
+    private static final UserFacade facade = UserFacade.getUserFacade(EMF);
     @Context
     private UriInfo context;
 
@@ -62,5 +66,14 @@ public class DemoResource {
     public String getFromAdmin() {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
+    }
+    
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("startcredit/{username}")
+    @RolesAllowed({"user", "admin"})
+    public String addBalance(@PathParam("username") String username) {
+        facade.addBalance(username);
+        return "{\"msg\": \"10000 DKK has been added to your account.\"}";
     }
 }

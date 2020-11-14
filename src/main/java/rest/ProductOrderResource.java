@@ -75,8 +75,8 @@ public class ProductOrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"user", "admin"})
     public String convertPriceExternally() throws InterruptedException, ExecutionException, TimeoutException, IOException {
-        String jsonProducts = PriceConversionFetcher.fetchPriceConversion(es, GSON);
-        return jsonProducts;
+        String jsonCurrentRate = PriceConversionFetcher.fetchPriceConversion(es, GSON);
+        return jsonCurrentRate;
     }
     
     @PUT
@@ -102,8 +102,8 @@ public class ProductOrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
     public String refundOrder(@PathParam("orderId") int orderId) throws MissingInput {
-       double currentBalance = ORDER_FACADE.refundOrder(orderId);
-       return "{\"refundMsg\":" + "\"Refund complete. Your balance is now: " + currentBalance + " DKK\"}";
+       ORDER_FACADE.refundOrder(orderId);
+       return "{\"refundMsg\":" + "\"Refund complete.\"}";
     }
     
 }

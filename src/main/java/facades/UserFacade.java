@@ -98,6 +98,20 @@ public class UserFacade {
             em.close();
         }
     }
+    
+    public double addBalance(String username) {
+        EntityManager em = emf.createEntityManager();
+        User user = em.find(User.class, username);
+        
+        try {
+            em.getTransaction().begin();
+            user.setBalance(10000);
+            em.getTransaction().commit();
+            return user.getBalance();
+        } finally {
+            em.close();
+        }
+    }
 
     private void checkIfExists(User user, EntityManager em) throws AuthenticationException {
 
