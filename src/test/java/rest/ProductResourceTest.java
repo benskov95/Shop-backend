@@ -204,7 +204,7 @@ public class ProductResourceTest {
                 
     }
 
-// Not working
+// Doesn't work
     
 //    @Test
 //    public void testFetchProductsExternally() {
