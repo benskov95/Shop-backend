@@ -105,7 +105,7 @@ public class UserFacade {
         
         try {
             em.getTransaction().begin();
-            user.setBalance(10000);
+            user.setBalance(user.getBalance() + 10000);
             em.getTransaction().commit();
             return user.getBalance();
         } finally {

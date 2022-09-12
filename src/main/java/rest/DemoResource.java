@@ -73,7 +73,7 @@ public class DemoResource {
     @Path("startcredit/{username}")
     @RolesAllowed({"user", "admin"})
     public String addBalance(@PathParam("username") String username) {
-        facade.addBalance(username);
-        return "{\"msg\": \"10000 DKK has been added to your account.\"}";
+        double newBalance = facade.addBalance(username);
+        return "{\"msg\": \"10000 DKK has been added to your account.\", \"newBalance\": " + newBalance + "}";
     }
 }

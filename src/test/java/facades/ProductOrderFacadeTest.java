@@ -169,6 +169,5 @@ public class ProductOrderFacadeTest {
         ol4 = new ProductOrderline(p2, 9);
         ol5 = new ProductOrderline(p3, 1);
     }
-
-    
+  
 }

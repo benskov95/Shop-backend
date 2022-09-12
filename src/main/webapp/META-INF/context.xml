@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--<Context path="/jpareststarter"/>-->
-<Context path="/shop-back">
+<Context path="/rest-shop">
   <!--    <Resource name="jdbc/DATABASE1"
              driverClassName="com.mysql.cj.jdbc.Driver"
              auth="Container"
